@@ -18,6 +18,8 @@ namespace Ansible
             Options.Keys.Count == 0 ? CommandName : $"{CommandName} {CreateCommandLine()}";
 
         public virtual void Execute(Action<string> onOutput = null, Action<string> onError = null)
+            => TryExecute(onOutput, onError);
+        public virtual bool TryExecute(Action<string> onOutput = null, Action<string> onError = null)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -42,6 +44,7 @@ namespace Ansible
             commandProcess.BeginErrorReadLine();
 
             commandProcess.WaitForExit();
+            return commandProcess.ExitCode == 0;
         }
 
         protected virtual string CreateCommandLine()
